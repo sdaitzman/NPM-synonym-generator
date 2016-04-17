@@ -2,6 +2,7 @@
 'use strict'
 let words = require('wordlist-english').american
 const _ = require('lodash')
+var ProgressBar = require('progress')
 
 var n = []
 var p = []
@@ -14,26 +15,41 @@ _(words).each((e, i) => {
   if (e.startsWith('m')) m.push(e)
 })
 
+var bar = new ProgressBar('Iterating word combinations {:bar}   [:percent] ETA :etas ', {
+  total: n.length
+})
+
 _(n).each((eN, iN) => {
   _(p).each((eP) => {
     _(m).each((eM) => {
       npms.push([eN, eP, eM])
     })
   })
-  console.log((iN / n.length) * 100 + '%')
+  bar.tick()
 })
 
-console.log('Done. Clearing excess memory so Node does not crash...')
+bar = new ProgressBar('Clearing excess memory :bar   [:percent]', {
+  total: 4
+})
 
 words = null
+bar.tick()
 n = null
+bar.tick()
 p = null
+bar.tick()
 m = null
+bar.tick()
 
-console.log('Done. Formatting NPMs...')
+const barFreq = 50
+
+bar = new ProgressBar('Formatting NPMs {:bar}   [:percent] ETA :etas ', {
+  total: npms.length / barFreq
+})
 
 _(npms).each((e, i) => {
   npms[i] = npms[i][0] + ' ' + npms[i][1] + ' ' + npms[i][2]
+  if (i % barFreq === 0) bar.tick()
 })
 
 console.log('Done. Printing ' + npms.length + ' NPMs...')
