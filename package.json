@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "lodash": "^4.11.1",
+    "progressbar": "^1.0.3",
+    "wordlist-english": "^1.1.0"
+  }
+}
